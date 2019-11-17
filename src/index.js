@@ -1,8 +1,6 @@
-console.log(1111)
-
 const React = {}
-React.createElement = function (tag, attrs, ...children) {
-  console.log(tag, attrs, children)
+React.createElement = function (type, attrs, ...children) {
+  console.log(type, attrs, children)
 }
 
 const a = (
