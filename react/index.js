@@ -1,9 +1,6 @@
-import { createElement } from './create-element'
-import { render } from './render'
+import createElement from './create-element'
+import Component from './component'
 export default {
   createElement,
-  render: (vnode, parentDom) => {
-    parentDom.innerHTML = ''
-    return render(vnode, parentDom)
-  }
+  Component
 }

@@ -1,18 +1,8 @@
-class Component {
-  constructor (props = {}) {
-    this.props = props
-    this.state = {}
-  }
+import Component from '../react/component'
+import { setAttribute } from './dom'
 
-  setState (stateChange) {
-    // 将修改合并到state
-    Object.assign(this.state, stateChange)
-    renderComponent(this)
-  }
-}
-
-export function render (vnode, parentDom) {
-  console.log('vnode', vnode)
+// 只需要把vnode转成dom就行
+function _render (vnode) {
   /**
    * @todo 这里这个布尔值没弄明白
    */
@@ -25,12 +15,13 @@ export function render (vnode, parentDom) {
   }
 
   if (typeof vnode === 'string') {
-    const textNode = document.createTextNode(vnode)
-    return parentDom.appendChild(textNode)
+    return document.createTextNode(vnode)
   }
 
   if (typeof vnode.type === 'function') {
-    return createComponent(vnode.type, vnode.props)
+    const component = createComponent(vnode.type, vnode.props)
+    setComponentProps(component, vnode.props)
+    return component.base
   }
 
   const dom = document.createElement(vnode.type)
@@ -54,8 +45,7 @@ export function render (vnode, parentDom) {
       }
     }) // 递归渲染子节点
   }
-
-  return parentDom.appendChild(dom)
+  return dom
 }
 
 function createComponent (component, props) {
@@ -73,27 +63,21 @@ function createComponent (component, props) {
   }
   return instance
 }
-function renderComponent () {
-
+function setComponentProps (component, props) {
+  component.props = props
+  renderComponent(component)
 }
-function setAttribute (dom, key, value) {
-  if (key === 'className') {
-    key = 'class'
-  }
-  if (/^on[A-Z]/.test(key)) {
-    key = key.toLowerCase()
-    dom[key] = value
-  } else if (key === 'style') {
-    if (typeof value === 'string') {
-      dom.style.cssText = value
-    } else if (typeof value === 'object') {
-      for (const name in value) {
-        if (Object.prototype.hasOwnProperty.call(value, name)) {
-          dom.style[name] = value[name]
-        }
-      }
-    }
-  } else {
-    dom.setAttribute(key, value)
-  }
+function renderComponent (component) {
+  let base = null
+  console.log('component', component)
+  const renderer = component.render()
+  base = _render(renderer)
+  component.base = base
+  base._component = component
+}
+
+export function render (vnode, parentDom) {
+  console.log('vnode', vnode)
+  console.log('parentDom', parentDom)
+  return parentDom.appendChild(_render(vnode))
 }
