@@ -3,6 +3,7 @@ import { setAttribute } from './dom'
 
 // 只需要把vnode转成dom就行
 function _render (vnode) {
+  console.log('vnode2', vnode)
   /**
    * @todo 这里这个布尔值没弄明白
    */
@@ -20,7 +21,8 @@ function _render (vnode) {
 
   if (typeof vnode.type === 'function') {
     const component = createComponent(vnode.type, vnode.props)
-    setComponentProps(component, vnode.props)
+    renderComponent(component)
+    // setComponentProps(component, vnode.props)
     return component.base
   }
 
@@ -49,10 +51,11 @@ function _render (vnode) {
 }
 
 function createComponent (component, props) {
+  console.error(props)
   let instance = null
   // 如果是类,直接返回实例
   if (component.prototype && component.prototype.render) {
-    instance = new component()
+    instance = new component(props)
     // 如果是函数，扩展为类组件
   } else {
     instance = new Component(props)
@@ -64,12 +67,11 @@ function createComponent (component, props) {
   return instance
 }
 function setComponentProps (component, props) {
-  component.props = props
+  // component.props = props
   renderComponent(component)
 }
 function renderComponent (component) {
   let base = null
-  console.log('component', component)
   const renderer = component.render()
   base = _render(renderer)
   component.base = base
