@@ -24,7 +24,7 @@ function _render (vnode) {
     // setComponentProps(component, vnode.props)
     return renderComponent(component).base
   }
-  console.error(vnode)
+  console.log(vnode)
   const dom = document.createElement(vnode.type)
 
   // 如果有属性设置属性
@@ -70,11 +70,15 @@ function setComponentProps (component, props) {
   // component.props = props
   renderComponent(component)
 }
-function renderComponent (component) {
+export function renderComponent (component) {
   let base = null
   const renderer = component.render()
   console.log('renderer', renderer)
   base = _render(renderer)
+  console.log(base, component.base)
+  if (component.base && component.base.parentNode) {
+    component.base.parentNode.replaceChild(base, component.base)
+  }
   component.base = base
   base._component = component
   return component

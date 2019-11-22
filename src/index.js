@@ -3,9 +3,23 @@ import ReactDOM from '../react-dom'
 console.log(React)
 
 class Welcome extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      num: 0
+    }
+  }
+
+  handleClick () {
+    this.setState({ num: this.state.num + 1 })
+  }
+
   render () {
     console.log('this', this)
-    return <p>Hello</p>
+    return (<div>
+      <p>Hello {this.state.num} </p>
+      <button onClick={this.handleClick.bind(this)}>add</button>
+    </div>)
   }
 }
 function Test (props) {
@@ -29,7 +43,7 @@ const a = (
   </h1>
 )
 console.log(a)
-console.warn(<Welcome ids="ddd"></Welcome>)
+console.log(<Welcome ids="ddd"></Welcome>)
 ReactDOM.render(a, document.getElementById('app'))
 // }
 
