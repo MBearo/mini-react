@@ -21,11 +21,10 @@ function _render (vnode) {
 
   if (typeof vnode.type === 'function') {
     const component = createComponent(vnode.type, vnode.props)
-    renderComponent(component)
     // setComponentProps(component, vnode.props)
-    return component.base
+    return renderComponent(component).base
   }
-
+  console.error(vnode)
   const dom = document.createElement(vnode.type)
 
   // 如果有属性设置属性
@@ -51,11 +50,11 @@ function _render (vnode) {
 }
 
 function createComponent (component, props) {
-  console.error(props)
   let instance = null
   // 如果是类,直接返回实例
   if (component.prototype && component.prototype.render) {
     instance = new component(props)
+    console.log('instance', instance)
     // 如果是函数，扩展为类组件
   } else {
     instance = new Component(props)
@@ -63,6 +62,7 @@ function createComponent (component, props) {
     instance.render = function () {
       return this.constructor(props)
     }
+    console.log('instance', instance)
   }
   return instance
 }
@@ -73,9 +73,11 @@ function setComponentProps (component, props) {
 function renderComponent (component) {
   let base = null
   const renderer = component.render()
+  console.log('renderer', renderer)
   base = _render(renderer)
   component.base = base
   base._component = component
+  return component
 }
 
 export function render (vnode, parentDom) {

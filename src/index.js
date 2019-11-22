@@ -4,8 +4,13 @@ console.log(React)
 
 class Welcome extends React.Component {
   render () {
-    return <h1>Hello</h1>
+    console.log('this', this)
+    return <p>Hello</p>
   }
+}
+function Test (props) {
+  console.log('Test props', props)
+  return (<a href="http://www.google.com">5435{props.haha}</a>)
 }
 
 // function tick () {
@@ -14,13 +19,17 @@ const a = (
       1是
     <h2 a="1" b="2">2</h2>
     <h3>3</h3>
+    <Test haha="sdf"></Test>
     <Welcome ids="ddd"></Welcome>
-    <h4>4</h4>
+    <Welcome ids="dfs"></Welcome>
+    <Welcome ids="ef3"></Welcome>
+    <h4 idaa="sgsdf">4</h4>
     {[1, 2, 3].map(item => (<div>{item}</div>))}
     <div>{new Date().toLocaleTimeString()}</div>
   </h1>
 )
 console.log(a)
+console.warn(<Welcome ids="ddd"></Welcome>)
 ReactDOM.render(a, document.getElementById('app'))
 // }
 
