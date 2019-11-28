@@ -15,7 +15,7 @@ class Welcome extends React.Component {
   }
 
   render () {
-    console.log('this', this)
+    console.error('this', this)
     return (<div>
       <p>Hello {this.state.num} </p>
       <button onClick={this.handleClick.bind(this)}>add</button>
@@ -26,7 +26,7 @@ function Test (props) {
   console.log('Test props', props)
   return (<a href="http://www.google.com">5435{props.haha}</a>)
 }
-
+var x = 10
 // function tick () {
 const a = (
   <h1>
@@ -36,7 +36,7 @@ const a = (
     <Test haha="sdf"></Test>
     <Welcome ids="ddd"></Welcome>
     <Welcome ids="dfs"></Welcome>
-    <Welcome ids="ef3"></Welcome>
+    <Welcome ids="ef3" ddd={x}></Welcome>
     <h4 idaa="sgsdf">4</h4>
     {[1, 2, 3].map(item => (<div>{item}</div>))}
     <div>{new Date().toLocaleTimeString()}</div>

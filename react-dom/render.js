@@ -7,11 +7,11 @@ function _render (vnode) {
   /**
    * @todo 这里这个布尔值没弄明白
    */
-  if (vnode === undefined || vnode === null || typeof vnode === 'boolean') {
+  if (vnode === undefined || vnode === null) {
     vnode = ''
   }
 
-  if (typeof vnode === 'number') {
+  if (typeof vnode === 'number' || typeof vnode === 'boolean') {
     vnode = String(vnode)
   }
 
@@ -73,11 +73,17 @@ function setComponentProps (component, props) {
 export function renderComponent (component) {
   let base = null
   const renderer = component.render()
-  console.log('renderer', renderer)
+  if (component.base && component.componentWillUpdate) {
+    component.componentWillUpdate()
+  }
   base = _render(renderer)
-  console.log(base, component.base)
   if (component.base && component.base.parentNode) {
     component.base.parentNode.replaceChild(base, component.base)
+  }
+  if (component.base) {
+    if (component.componentDidUpdate) component.componentDidUpdate()
+  } else if (component.componentDidMount) {
+    component.componentDidMount()
   }
   component.base = base
   base._component = component
