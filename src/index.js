@@ -27,26 +27,22 @@ function Test (props) {
   return (<a href="http://www.google.com">5435{props.haha}</a>)
 }
 var x = 10
-// function tick () {
-const a = (
-  <h1>
-      1是
-    <h2 a="1" b="2">2</h2>
-    <h3>3</h3>
-    <Test haha="sdf"></Test>
-    <Welcome ids="ddd"></Welcome>
-    <Welcome ids="dfs"></Welcome>
-    <Welcome ids="ef3" ddd={x}></Welcome>
-    <h4 idaa="sgsdf">4</h4>
-    {[1, 2, 3].map(item => (<div>{item}</div>))}
-    <div>{new Date().toLocaleTimeString()}</div>
-  </h1>
-)
-console.log(a)
-console.log(<Welcome ids="ddd"></Welcome>)
-ReactDOM.render(a, document.getElementById('app'))
-// }
 
-// setInterval(() => {
-//   tick()
-// }, 1000)
+// const a = (
+//   <h1>
+//       1是
+//     <h2 a="1" b="2">2</h2>
+//     <h3>3</h3>
+//     <Test haha="sdf"></Test>
+//     <Welcome ids="ddd"></Welcome>
+//     <Welcome ids="dfs"></Welcome>
+//     <Welcome ids="ef3" ddd={x}></Welcome>
+//     <h4 idaa="sgsdf">4</h4>
+//     {[1, 2, 3].map((item, index) => (<div key={index}>{item}</div>))}
+//     <div>{new Date().toLocaleTimeString()}</div>
+//   </h1>
+// )
+var a = (<div>{[1, 2, 3].map((item, index) => (<div key={index}>{item}</div>))}</div>)
+console.log(a)
+
+ReactDOM.render(a, document.getElementById('app'))
