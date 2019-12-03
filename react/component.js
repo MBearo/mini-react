@@ -1,7 +1,8 @@
 
-import { renderComponent } from '../react-dom/render'
+import { renderComponent } from '../react-dom/diff'
 export default class Component {
   constructor (props = {}) {
+    this.isReactComponent = true
     this.props = props
     // console.log('props', props)
     this.state = {}

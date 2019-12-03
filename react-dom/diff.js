@@ -55,15 +55,19 @@ function diffNode (vnode, dom) {
       }
     }
   }
-  if (Array.isArray(vnode)) {
-    vnode.forEach(item => diffChildren(item, out))
-  } else {
-    if (
-      (vnode.children && vnode.children.length > 0) ||
+  if (
+    (vnode.children && vnode.children.length > 0) ||
       (out.childNodes && out.childNodes.length > 0)
-    ) {
-      diffChildren(vnode.children, out)
-    }
+  ) {
+    let list = []
+    vnode.children.forEach(item => {
+      if (Array.isArray(item)) {
+        list = list.concat(item)
+      } else {
+        list.push(item)
+      }
+    })
+    diffChildren(list, out)
   }
 
   diffAttributes(vnode, out)
@@ -179,7 +183,7 @@ function diffChildren (vchildren, dom) {
         for (let j = min; j < childrenLen; j++) {
           const c = children[j]
 
-          if (c && isSameNodeType(c, vchild)) {
+          if (c && isSameNodeType(vchild, c)) {
             child = c
             children[j] = undefined
 
@@ -189,6 +193,7 @@ function diffChildren (vchildren, dom) {
           }
         }
       }
+      console.log(vchild, child)
       child = diffNode(vchild, child)
 
       const f = domChildren[i]

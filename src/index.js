@@ -42,7 +42,30 @@ var x = 10
 //     <div>{new Date().toLocaleTimeString()}</div>
 //   </h1>
 // )
-var a = (<div>{[1, 2, 3].map((item, index) => (<div key={index}>{item}</div>))}</div>)
+class Counter extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      num: 1
+    }
+  }
+
+  onClick () {
+    this.setState({ num: this.state.num + 1 })
+  }
+
+  render () {
+    return (
+      <div>
+        <h1>count: { this.state.num }</h1>
+        <button onClick={ () => this.onClick()}>add</button>
+      </div>
+    )
+  }
+}
+var a = (<div><h1>xxx</h1>{[1, 2, 3].map((item, index) => (<div key={index}>{item}</div>))}</div>)
+// var a = (<div><p></p><h1></h1></div>)
+
 console.log(a)
 
-ReactDOM.render(a, document.getElementById('app'))
+ReactDOM.render(<Counter/>, document.getElementById('app'))
