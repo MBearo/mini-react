@@ -1,6 +1,5 @@
 import React from '../react'
 import ReactDOM from '../react-dom'
-console.log(React)
 
 class Welcome extends React.Component {
   constructor (props) {
@@ -68,4 +67,4 @@ var a = (<div><h1>xxx</h1>{[1, 2, 3].map((item, index) => (<div key={index}>{ite
 
 console.log(a)
 
-ReactDOM.render(<Counter/>, document.getElementById('app'))
+ReactDOM.render(a, document.getElementById('app'))
