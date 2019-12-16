@@ -175,6 +175,7 @@ export function h (nodeName, attributes, ...args) {
         arr = sharedArr
         arr[0] = p
       }
+      console.log(arr)
       for (let j = 0; j < arr.length; j++) {
         let child = arr[j]
         const simple = notEmpty(child) && !isVNode(child)
@@ -192,7 +193,7 @@ export function h (nodeName, attributes, ...args) {
       }
     }
   }
-
+  // 这里没看懂。。。
   if (attributes && attributes.children) {
     delete attributes.children
   }

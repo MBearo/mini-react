@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "jsx": "babel --plugins @babel/plugin-syntax-jsx xxx.js ",
     "dev": "parcel serve ./src/index.html",
-    "dev2": "parcel serve ./src/index2.html"
+    "dev2": "parcel serve ./src/index2.html",
+    "dev3": "parcel serve ./src/index3.html"
   },
   "repository": {
     "type": "git",
