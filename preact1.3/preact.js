@@ -24,7 +24,7 @@ const hooks = {}
 
 /** @public Render JSX into a `parent` Element. */
 export function render (component, parent) {
-  console.log(component)
+  console.log('component', component)
   const built = build(null, component)
   const c = built._component
   if (c) hook(c, 'componentWillMount')
@@ -155,7 +155,6 @@ export class Component {
  *  render(<span>foo</span>, document.body);
  */
 export function h (nodeName, attributes, ...args) {
-  console.log('h', nodeName, attributes, args)
   let children
   const sharedArr = []
   const len = args.length
@@ -175,7 +174,7 @@ export function h (nodeName, attributes, ...args) {
         arr = sharedArr
         arr[0] = p
       }
-      console.log(arr)
+      console.log('arr', arr)
       for (let j = 0; j < arr.length; j++) {
         let child = arr[j]
         const simple = notEmpty(child) && !isVNode(child)
@@ -184,6 +183,7 @@ export function h (nodeName, attributes, ...args) {
         if (simple) {
           child = String(child)
         }
+        // 它这里把字符串连起来了
         if (simple && lastSimple) {
           children[children.length - 1] += child
         } else if (notEmpty(child)) {
@@ -311,7 +311,7 @@ function build (dom, vnode, rootComponent) {
   if (nodeName === null || nodeName === undefined) {
     nodeName = 'x-undefined-element'
   }
-
+  console.log('nodeName', nodeName)
   if (!dom) {
     out = recycler.create(nodeName)
   } else if (dom.nodeName.toLowerCase() !== nodeName) {
