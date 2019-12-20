@@ -8,7 +8,25 @@ function render (component, parent) {
 }
 
 class Component {
+  constructor () {
+    this.props = {}
+    this.state = {}
+  }
 
+  render (props, state) {
+    return h('div', { component: this.constructor.name }, props.children)
+  }
+
+  setProps (props) {
+
+  }
+}
+
+function buildComponentFromVNode (dom, vnode) {
+  return createComponentFromVNode(vnode)
+}
+function createComponentFromVNode (vnode) {
+  const component = componentRecycler.create(vnode.nodeName)
 }
 
 function h (nodeName, attributes, ...args) {
@@ -85,6 +103,18 @@ const recycler = {
   },
   normalizeName: memoize(name => name.toUpperCase())
 }
+
+const componentRecycler = {
+  components: {},
+  create (Ctor) {
+    const list = componentRecycler.components[Ctor.name]
+    if (list && list.length) {
+      return list.splice(0, 1)[0]
+    }
+    return new Ctor()
+  }
+}
+
 function notEmpty (x) {
   return x !== null && x !== undefined
 }
