@@ -3,7 +3,9 @@ const memoize = (fn, mem = {}) => k => mem.hasOwnProperty(k) ? mem[k] : (mem[k] 
 function render (component, parent) {
   console.log('component', component)
   const built = build(null, component)
+  const c = built._component
   parent.appendChild(built)
+  if (c) hook(c, 'componentDidMount')
   return built
 }
 
@@ -13,12 +15,22 @@ class Component {
     this.state = {}
   }
 
-  render (props, state) {
-    return h('div', { component: this.constructor.name }, props.children)
+  setState (state) {
+    extend(this.state, state)
   }
 
   setProps (props) {
 
+  }
+
+  render (props, state) {
+    return h('div', { component: this.constructor.name }, props.children)
+  }
+
+  _render (opts = {}) {
+    const rendered = hook(this, 'render', this.props, this.state)
+    const base = build(this.base, rendered || '', this)
+    this.base = base
   }
 }
 
@@ -27,6 +39,13 @@ function buildComponentFromVNode (dom, vnode) {
 }
 function createComponentFromVNode (vnode) {
   const component = componentRecycler.create(vnode.nodeName)
+  component._render({ build: true })
+
+  const node = component.base
+  node._component = component
+  node._componentConstructor = vnode.nodeName
+
+  return node
 }
 
 function h (nodeName, attributes, ...args) {
@@ -69,6 +88,11 @@ function build (dom, vnode, rootComponent) {
   console.log(vnode)
   let out = dom
   let nodeName = vnode.nodeName
+
+  if (typeof nodeName === 'function') {
+    return buildComponentFromVNode(dom, vnode)
+  }
+
   if (typeof vnode === 'string') {
     return document.createTextNode(vnode)
   }
@@ -90,6 +114,11 @@ function build (dom, vnode, rootComponent) {
     out.appendChild(child)
   }
   return out
+}
+
+function hook (obj, name, ...args) {
+  const fn = obj[name]
+  if (fn && typeof fn === 'function') return fn.apply(obj, args)
 }
 
 const recycler = {
@@ -118,7 +147,18 @@ const componentRecycler = {
 function notEmpty (x) {
   return x !== null && x !== undefined
 }
+
 function isVNode (obj) {
   return obj && obj.__isVNode === true
 }
-export { render, h }
+
+function extend (obj, props) {
+  for (const i in props) {
+    if (props.hasOwnProperty(i)) {
+      obj[i] = props[i]
+    }
+  }
+  return obj
+}
+
+export { render, h, Component }
