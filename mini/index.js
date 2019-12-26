@@ -17,10 +17,16 @@ class Component {
 
   setState (state) {
     extend(this.state, state)
+    this.triggerRender()
   }
 
   setProps (props) {
 
+  }
+
+  triggerRender () {
+    // this._dirty = true
+    renderQueue.add(this)
   }
 
   render (props, state) {
@@ -43,7 +49,7 @@ function createComponentFromVNode (vnode) {
 
   const node = component.base
   node._component = component
-  node._componentConstructor = vnode.nodeName
+  // node._componentConstructor = vnode.nodeName
 
   return node
 }
@@ -85,7 +91,7 @@ class VNnode {
 VNnode.prototype.__isVNode = true
 
 function build (dom, vnode, rootComponent) {
-  console.log(vnode)
+  console.log('build', dom, vnode, rootComponent)
   let out = dom
   let nodeName = vnode.nodeName
 
@@ -119,6 +125,23 @@ function build (dom, vnode, rootComponent) {
 function hook (obj, name, ...args) {
   const fn = obj[name]
   if (fn && typeof fn === 'function') return fn.apply(obj, args)
+}
+
+const renderQueue = {
+  items: [],
+  add (component) {
+    if (renderQueue.items.push(component) !== 1) return
+
+    setTimeout(renderQueue.process, 0)
+  },
+  process () {
+    const items = renderQueue.items
+    let len = items.length
+    if (!len) return
+    while (len--) {
+      items[len]._render()
+    }
+  }
 }
 
 const recycler = {

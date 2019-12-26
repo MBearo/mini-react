@@ -199,6 +199,7 @@ export function h (nodeName, attributes, ...args) {
   }
   console.log('children', children)
   const p = new VNode(nodeName, attributes || undefined, children || undefined)
+  // 不知道要干啥
   hook(hooks, 'vnode', p)
   return p
 }
@@ -440,6 +441,7 @@ const renderQueue = {
   add (component) {
     if (renderQueue.items.push(component) !== 1) return
 
+    // debounceRendering 这个看起来没用
     const d = hooks.debounceRendering
     if (d) d(renderQueue.process)
     else setTimeout(renderQueue.process, 0)

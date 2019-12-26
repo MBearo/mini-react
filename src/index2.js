@@ -27,12 +27,14 @@ class Clock extends Component {
   }
 }
 
-const a = (
-  <p>
-    <h1>1</h1>
-    <span>{[5, 6].map(v => v)}</span>
-    {[1, 2, 3].map(v => <div>{v}</div>)}
-  </p>
-)
-console.log('a', a)
+// const a = (
+//   <p>
+//     <h1>1</h1>
+//     <span>{[5, 6].map(v => v)}</span>
+//     {[1, 2, 3].map(v => <div>{v}</div>)}
+//   </p>
+// )
+// console.log('a', a)
+console.log('Clock', <Clock/>)
+
 render(<Clock/>, document.body)

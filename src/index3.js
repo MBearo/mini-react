@@ -9,12 +9,12 @@ class Clock extends Component {
     this.state.time = Date.now()
   }
 
-  // componentDidMount () {
-  //   // update time every second
-  //   this.timer = setInterval(() => {
-  //     this.setState({ time: Date.now() })
-  //   }, 1000)
-  // }
+  componentDidMount () {
+    // update time every second
+    this.timer = setInterval(() => {
+      this.setState({ time: Date.now() })
+    }, 1000)
+  }
 
   // componentWillUnmount () {
   //   // stop when not renderable
