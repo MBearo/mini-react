@@ -30,7 +30,7 @@ export function render (component, parent) {
   if (c) hook(c, 'componentWillMount')
   parent.appendChild(built)
   if (c) hook(c, 'componentDidMount')
-  return build
+  return built
 }
 
 /** @protected Processes all created VNodes */
@@ -103,10 +103,10 @@ export class Component {
 
   /** Mark component as dirty and queue up a render. */
   triggerRender () {
-    if (this._dirty !== true) {
-      this._dirty = true
-      renderQueue.add(this)
-    }
+    // if (this._dirty !== true) {
+    this._dirty = true
+    renderQueue.add(this)
+    // }
   }
 
   /** Accepts `props` and `state`, and returns a new Virtual DOM tree to build.
@@ -136,10 +136,10 @@ export class Component {
 
     if (this.base || opts.build === true) {
       const base = build(this.base, rendered || EMPTY_BASE, this)
-      if (this.base && base !== this.base) {
-        const p = this.base.parentNode
-        if (p) p.replaceChild(base, this.base)
-      }
+      // if (this.base && base !== this.base) {
+      //   const p = this.base.parentNode
+      //   if (p) p.replaceChild(base, this.base)
+      // }
       this.base = base
     }
 
@@ -247,29 +247,29 @@ function isSameNodeType (node, vnode) {
 
 /** @private Apply the component referenced by a VNode to the DOM. */
 function buildComponentFromVNode (dom, vnode) {
-  const c = dom && dom._component
+  // const c = dom && dom._component
 
-  if (c && dom._componentConstructor === vnode.nodeName) {
-    const props = getNodeProps(vnode)
-    c.setProps(props, SYNC_RENDER)
-    return dom
-  } else {
-    if (c) unmountComponent(dom, c)
-    return createComponentFromVNode(vnode)
-  }
+  // if (c && dom._componentConstructor === vnode.nodeName) {
+  // const props = getNodeProps(vnode)
+  // c.setProps(props, SYNC_RENDER)
+  // return dom
+  // } else {
+  // if (c) unmountComponent(dom, c)
+  return createComponentFromVNode(vnode)
+  // }
 }
 
 /** @private Instantiate and render a Component, given a VNode whose nodeName is a constructor. */
 function createComponentFromVNode (vnode) {
   const component = componentRecycler.create(vnode.nodeName)
 
-  const props = getNodeProps(vnode)
-  component.setProps(props, NO_RENDER)
+  // const props = getNodeProps(vnode)
+  // component.setProps(props, NO_RENDER)
   component._render(DOM_RENDER)
 
   const node = component.base
   node._component = component
-  node._componentConstructor = vnode.nodeName
+  // node._componentConstructor = vnode.nodeName
 
   return node
 }
@@ -298,14 +298,14 @@ function build (dom, vnode, rootComponent) {
   }
 
   if (typeof vnode === 'string') {
-    if (dom) {
-      if (dom.nodeType === 3) {
-        dom.textContent = vnode
-        return dom
-      } else {
-        if (dom.nodeType === 1) recycler.collect(dom)
-      }
-    }
+    // if (dom) {
+    //   if (dom.nodeType === 3) {
+    //     dom.textContent = vnode
+    //     return dom
+    //   } else {
+    //     if (dom.nodeType === 1) recycler.collect(dom)
+    //   }
+    // }
     return document.createTextNode(vnode)
   }
 
@@ -321,55 +321,54 @@ function build (dom, vnode, rootComponent) {
     // reclaim element nodes
     if (dom.nodeType === 1) recycler.collect(dom)
   } else if (dom._component && dom._component !== rootComponent) {
-    unmountComponent(dom, dom._component)
+    // unmountComponent(dom, dom._component)
   }
 
-  // apply attributes
-  const old = getNodeAttributes(out) || EMPTY
-  const attrs = vnode.attributes || EMPTY
-  console.log('old', old)
+  // // apply attributes
+  // const old = getNodeAttributes(out) || EMPTY
+  // const attrs = vnode.attributes || EMPTY
 
-  // removed attributes
-  if (old !== EMPTY) {
-    for (const name in old) {
-      if (old.hasOwnProperty(name)) {
-        const o = attrs[name]
-        if (o === undefined || o === null || o === false) {
-          setAccessor(out, name, null, old[name])
-        }
-      }
-    }
-  }
+  // // removed attributes
+  // if (old !== EMPTY) {
+  //   for (const name in old) {
+  //     if (old.hasOwnProperty(name)) {
+  //       const o = attrs[name]
+  //       if (o === undefined || o === null || o === false) {
+  //         setAccessor(out, name, null, old[name])
+  //       }
+  //     }
+  //   }
+  // }
 
-  // new & updated attributes
-  if (attrs !== EMPTY) {
-    for (const name in attrs) {
-      if (attrs.hasOwnProperty(name)) {
-        const value = attrs[name]
-        if (value !== undefined && value !== null && value !== false) {
-          const prev = getAccessor(out, name, old[name])
-          if (value !== prev) {
-            setAccessor(out, name, value, prev)
-          }
-        }
-      }
-    }
-  }
+  // // new & updated attributes
+  // if (attrs !== EMPTY) {
+  //   for (const name in attrs) {
+  //     if (attrs.hasOwnProperty(name)) {
+  //       const value = attrs[name]
+  //       if (value !== undefined && value !== null && value !== false) {
+  //         const prev = getAccessor(out, name, old[name])
+  //         if (value !== prev) {
+  //           setAccessor(out, name, value, prev)
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   const children = slice.call(out.childNodes)
   const keyed = {}
-  for (let i = children.length; i--;) {
-    const t = children[i].nodeType
-    let key
-    if (t === 3) {
-      key = t.key
-    } else if (t === 1) {
-      key = children[i].getAttribute('key')
-    } else {
-      continue
-    }
-    if (key) keyed[key] = children.splice(i, 1)[0]
-  }
+  // for (let i = children.length; i--;) {
+  //   const t = children[i].nodeType
+  //   let key
+  //   if (t === 3) {
+  //     key = t.key
+  //   } else if (t === 1) {
+  //     key = children[i].getAttribute('key')
+  //   } else {
+  //     continue
+  //   }
+  //   if (key) keyed[key] = children.splice(i, 1)[0]
+  // }
   const newChildren = []
 
   if (vnode.children) {
@@ -377,29 +376,29 @@ function build (dom, vnode, rootComponent) {
       const vchild = vnode.children[i]
       const attrs = vchild.attributes
       let key, child
-      if (attrs) {
-        key = attrs.key
-        child = key && keyed[key]
-      }
+      // if (attrs) {
+      //   key = attrs.key
+      //   child = key && keyed[key]
+      // }
 
-      // attempt to pluck a node of the same type from the existing children
-      if (!child) {
-        const len = children.length
-        if (children.length) {
-          for (let j = 0; j < len; j++) {
-            if (isSameNodeType(children[j], vchild)) {
-              child = children.splice(j, 1)[0]
-              break
-            }
-          }
-        }
-      }
+      // // attempt to pluck a node of the same type from the existing children
+      // if (!child) {
+      //   const len = children.length
+      //   if (children.length) {
+      //     for (let j = 0; j < len; j++) {
+      //       if (isSameNodeType(children[j], vchild)) {
+      //         child = children.splice(j, 1)[0]
+      //         break
+      //       }
+      //     }
+      //   }
+      // }
 
       // morph the matched/found/created DOM child to match vchild (deep)
       newChildren.push(build(child, vchild))
     }
   }
-
+  console.log('newChildren', newChildren)
   // apply the constructed/enhanced ordered list to the parent
   for (let i = 0, len = newChildren.length; i < len; i++) {
     // we're intentionally re-referencing out.childNodes here as it is a live array (akin to live NodeList)
@@ -413,7 +412,7 @@ function build (dom, vnode, rootComponent) {
       } else {
         out.appendChild(child)
       }
-      if (c) hook(c, 'componentDidMount')
+      // if (c) hook(c, 'componentDidMount')
     }
   }
 
@@ -438,14 +437,15 @@ function build (dom, vnode, rootComponent) {
 const renderQueue = {
   items: [],
   itemsOffline: [],
-  pending: false,
+  // pending: false,
   add (component) {
     if (renderQueue.items.push(component) !== 1) return
 
     // debounceRendering 这个看起来没用
-    const d = hooks.debounceRendering
-    if (d) d(renderQueue.process)
-    else setTimeout(renderQueue.process, 0)
+    // const d = hooks.debounceRendering
+    // if (d) d(renderQueue.process)
+    // else
+    setTimeout(renderQueue.process, 0)
   },
   process () {
     const items = renderQueue.items
@@ -455,9 +455,9 @@ const renderQueue = {
     renderQueue.items.length = 0
     renderQueue.itemsOffline = items
     while (len--) {
-      if (items[len]._dirty) {
-        items[len]._render()
-      }
+      // if (items[len]._dirty) {
+      items[len]._render()
+      // }
     }
   }
 }

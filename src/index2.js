@@ -11,15 +11,15 @@ class Clock extends Component {
 
   componentDidMount () {
     // update time every second
-    this.timer = setInterval(() => {
-      this.setState({ time: Date.now() })
-    }, 1000)
+    // window._timer = setInterval(() => {
+    //   this.setState({ time: Date.now() })
+    // }, 1000)
   }
 
-  componentWillUnmount () {
-    // stop when not renderable
-    clearInterval(this.timer)
-  }
+  // componentWillUnmount () {
+  //   // stop when not renderable
+  //   clearInterval(this.timer)
+  // }
 
   render (props, state) {
     const time = new Date(state.time).toLocaleTimeString()

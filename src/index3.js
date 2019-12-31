@@ -11,7 +11,7 @@ class Clock extends Component {
 
   componentDidMount () {
     // update time every second
-    this.timer = setInterval(() => {
+    window._timer = setInterval(() => {
       this.setState({ time: Date.now() })
     }, 1000)
   }
@@ -27,12 +27,12 @@ class Clock extends Component {
   }
 }
 
-const a = (
-  <p>
-    <h1>1</h1>
-    <span>{[5, 6].map(v => v)}</span>
-    {[1, 2, 3].map(v => <div>{v}</div>)}
-  </p>
-)
-console.log('a', a)
+// const a = (
+//   <p>
+//     <h1>1</h1>
+//     <span>{[5, 6].map(v => v)}</span>
+//     {[1, 2, 3].map(v => <div>{v}</div>)}
+//   </p>
+// )
+// console.log('a', a)
 render(<Clock/>, document.body)

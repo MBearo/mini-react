@@ -1,5 +1,7 @@
 const memoize = (fn, mem = {}) => k => mem.hasOwnProperty(k) ? mem[k] : (mem[k] = fn(k))
 
+const slice = Array.prototype.slice
+
 function render (component, parent) {
   console.log('component', component)
   const built = build(null, component)
@@ -25,7 +27,6 @@ class Component {
   }
 
   triggerRender () {
-    // this._dirty = true
     renderQueue.add(this)
   }
 
@@ -106,8 +107,15 @@ function build (dom, vnode, rootComponent) {
     nodeName = 'x-undefined-element'
   }
   console.log('nodeName', nodeName)
-  out = recycler.create(nodeName)
-
+  if (!dom) {
+    out = recycler.create(nodeName)
+  } else if (dom.nodeName.toLowerCase() !== nodeName) {
+    out = recycler.create(nodeName)
+    appendChildren(out, slice.call(dom.childNodes))
+    // reclaim element nodes
+    if (dom.nodeType === 1) recycler.collect(dom)
+  }
+  const children = slice.call(out.childNodes)
   const newChildren = []
   if (vnode.children) {
     for (let i = 0, vlen = vnode.children.length; i < vlen; i++) {
@@ -115,10 +123,24 @@ function build (dom, vnode, rootComponent) {
       newChildren.push(build(null, vchild))
     }
   }
+  console.log('newChildren', newChildren)
   for (let i = 0; i < newChildren.length; i++) {
     const child = newChildren[i]
     out.appendChild(child)
   }
+
+  for (let i = 0, len = children.length; i < len; i++) {
+    const child = children[i]
+    const c = child._component
+    child.parentNode.removeChild(child)
+    if (c) {
+      hook(c, 'componentDidUnmount')
+      componentRecycler.collect(c)
+    } else if (child.nodeType === 1) {
+      recycler.collect(child)
+    }
+  }
+
   return out
 }
 
@@ -129,6 +151,7 @@ function hook (obj, name, ...args) {
 
 const renderQueue = {
   items: [],
+  itemsOffline: [],
   add (component) {
     if (renderQueue.items.push(component) !== 1) return
 
@@ -138,6 +161,9 @@ const renderQueue = {
     const items = renderQueue.items
     let len = items.length
     if (!len) return
+    renderQueue.items = renderQueue.itemsOffline
+    renderQueue.items.length = 0
+    renderQueue.itemsOffline = items
     while (len--) {
       items[len]._render()
     }
@@ -182,6 +208,18 @@ function extend (obj, props) {
     }
   }
   return obj
+}
+function appendChildren (parent, children) {
+  const len = children.length
+  if (len <= 2) {
+    parent.appendChild(children[0])
+    if (len === 2) parent.appendChild(children[1])
+    return
+  }
+
+  const frag = document.createDocumentFragment()
+  for (let i = 0; i < len; i++) frag.appendChild(children[i])
+  parent.appendChild(frag)
 }
 
 export { render, h, Component }
