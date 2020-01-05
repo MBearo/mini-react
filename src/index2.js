@@ -2,6 +2,18 @@ import { render, Component, h } from '../preact1.3/preact'
 const React = {}
 React.createElement = h
 
+class Clock2 extends Component {
+  click (e) {
+    e.stopPropagation()
+    console.log(this)
+    console.log(e)
+  }
+
+  render (props, state) {
+    return <div onclick={e => this.click(e)}>111</div>
+  }
+}
+
 class Clock extends Component {
   constructor () {
     super()
@@ -20,10 +32,14 @@ class Clock extends Component {
   //   // stop when not renderable
   //   clearInterval(this.timer)
   // }
+  click (e) {
+    console.log(this)
+    console.log(e)
+  }
 
   render (props, state) {
     const time = new Date(state.time).toLocaleTimeString()
-    return <span>{ time }</span>
+    return <span onclick={e => this.click(e)}>{ time } <Clock2/> </span>
   }
 }
 
